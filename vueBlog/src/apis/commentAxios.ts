@@ -1,51 +1,43 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores/userStore'
-
 import type { Comment } from '@/types/Comment'
 
 declare module 'axios' {
   export interface AxiosInstance {
-    getCommentsByArticleId: (articleId: number) => Promise<any>
-    addComment: (articleId: number, comment: Comment) => Promise<any>
-    deleteComment: (commentId: number) => Promise<any>
+    getCommentsByBlogId: (BlogId: number) => Promise<unknown>
+    addComment: (BlogId: number, comment: Comment) => Promise<unknown>
   }
 }
 
+import { createPinia } from 'pinia'
+const pinia = createPinia()
+
+const mockCommentBaseUrl: string = 'http://127.0.0.1:4523/m1/5682619-5363514-default/comment'
+
 // 创建一个 axios 实例
 const CommentAxiosInstance = axios.create({
-  baseURL: 'http://192.168.54.14:9000/comment', // 配置基础路由为 https
+  baseURL: mockCommentBaseUrl, // 配置基础路由为 https
   timeout: 10000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json'
   }
 })
-
-CommentAxiosInstance.getCommentsByArticleId = async (articleId) => {
-  const response = await CommentAxiosInstance.get('/getAllArticleComments', {
+CommentAxiosInstance.getCommentsByBlogId = async (BlogId) => {
+  const response = await CommentAxiosInstance.get('/getCommentsByBlogId', {
     params: {
-      articleId: articleId
+      id: BlogId
     }
   })
   return response
 }
 
-CommentAxiosInstance.addComment = async (articleId, comment) => {
-  const response = await CommentAxiosInstance.post('/addComment', {
-    articleId: articleId,
+CommentAxiosInstance.addComment = async (BlogId, comment) => {
+  const response = await CommentAxiosInstance.post('/addcomment', {
+    Id: BlogId,
     comment: comment
   })
   return response
 }
-
-CommentAxiosInstance.deleteComment = async (commentId) => {
-  const response = await CommentAxiosInstance.get('/deleteComment', {
-    params: {
-      commentId: commentId
-    }
-  })
-  return response
-}
-
 // 设置请求拦截器
 CommentAxiosInstance.interceptors.request.use(
   (config) => {
@@ -66,7 +58,7 @@ CommentAxiosInstance.interceptors.request.use(
 CommentAxiosInstance.interceptors.response.use(
   (response) => {
     // 在这里对响应数据做些什么
-    return response // 可以根据实际情况做处理，例如只返回数据部分
+    return response.data // 可以根据实际情况做处理，例如只返回数据部分
   },
   (error) => {
     // 对响应错误做些什么
