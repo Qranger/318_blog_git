@@ -1,25 +1,21 @@
 <template>
-  <!-- <div class="container">
-    <div>
-      <RouterView />
-    </div>
-  </div> -->
   <div class="container">
     <el-container>
       <el-header>
-        <div class="">
-
+        <div class="bg-red-300">
+          <NavBar />
         </div>
       </el-header>
       <el-container>
-        <el-aside width="200px">Aside</el-aside>
         <el-main><RouterView /></el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import NavBar from '@/components/NavBar.vue'
+</script>
 
 <style scoped>
 .container {

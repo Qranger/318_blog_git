@@ -9,6 +9,17 @@
       </div>
     </el-card>
   </div>
+
+  <div class="card glass w-96"  @click="handleCardClick">
+  <figure class= "w-232 h-">
+    <img
+      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+      alt="car!" />
+  </figure>
+  <div class="card-body">
+    <p>{{ title }}</p>
+  </div>
+</div>
 </template>
 
 <script setup lang="ts">
@@ -22,7 +33,6 @@ const props = defineProps<{
   title: string
   id: number
 }>()
-
 
 // 处理点击事件
 const handleCardClick = () => {

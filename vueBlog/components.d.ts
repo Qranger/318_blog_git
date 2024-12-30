@@ -14,6 +14,8 @@ declare module 'vue' {
     MdArticlePreview: typeof import('./src/components/MdArticlePreview.vue')['default']
     MdBlogEditor: typeof import('./src/components/MdBlogEditor.vue')['default']
     MdComment: typeof import('./src/components/MdComment.vue')['default']
+    Navbar: typeof import('./src/components/Navbar.vue')['default']
+    NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UComment: typeof import('undraw-ui')['UComment']
