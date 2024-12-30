@@ -1,0 +1,78 @@
+<template>
+  <div>
+    <el-card
+      style="width: 200px; height: 321px"
+      shadow="hover"
+      @click="handleCardClick"
+      class="custom-card"
+    >
+      <el-avatar :size="50" :src="user.avatar" />
+      <p>用户 id :{{ user.id }}</p>
+      <p>用户名 name : {{ user.name }}</p>
+    </el-card>
+  </div>
+</template>
+
+<script setup lang="ts">
+import UserAxiosInstance from '@/apis/userAxios'
+import { onMounted, ref } from 'vue'
+import { useUserStore } from '@/stores/userStore'
+import router from '@/router/index'
+import type { User } from '@/types/User'
+import type { Response } from '@/types/Response'
+
+const Userstore = useUserStore()
+
+const props = defineProps<{
+  id: number
+}>()
+
+const user = ref({
+  id: props.id,
+  name: '',
+  avatar: '',
+})
+
+const getSelfUser = async () => {
+  try {
+    const response: Response = await UserAxiosInstance.getUserById(props.id)
+    const data = response.data as User
+    console.log(data)
+    //pinia 状态库
+    user.value.id = data.id!
+    user.value.name = data.name!
+    user.value.avatar = data.avatar!
+    console.log(user)
+  } catch (error) {
+    console.error('getUser', error)
+  }
+}
+// 处理点击事件
+const handleCardClick = () => {
+  // 在这里可以定义点击卡片后的行为，例如触发事件或者跳转页面等
+  console.log('UserCard clicked!')
+  if (Userstore.User.id == user.value.id) {
+    //点击的是自己的头像，跳转到自己界面
+    router.push('MyHome')
+  } else {
+    //点击的是别人的头像，跳转到别人界面
+    Userstore.visitUserId = user.value.id
+    router.push('OtherHome')
+  }
+}
+
+onMounted(() => {
+  getSelfUser()
+})
+</script>
+
+<style scoped>
+.custom-card {
+  border-radius: 15px; /* 设置四周圆角 */
+  background-color: #e0f7da; /* 设置背景颜色为浅绿色 */
+}
+
+.custom-card p {
+  font-weight: bold; /* 加粗 */
+}
+</style>

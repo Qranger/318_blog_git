@@ -2,40 +2,40 @@ import axios from 'axios'
 import { useUserStore } from '@/stores/userStore'
 import type { Comment } from '@/types/Comment'
 
+import type { Response } from '@/types/Response'
+
 declare module 'axios' {
   export interface AxiosInstance {
-    getCommentsByBlogId: (BlogId: number) => Promise<unknown>
-    addComment: (BlogId: number, comment: Comment) => Promise<unknown>
+    getCommentsByBlogId: (BlogId: number) => Promise<Response>
+    addComment: (BlogId: number, comment: Comment) => Promise<Response>
+    getUserIdByCommentId: (CommentId: number) => Promise<Response>
   }
 }
 
-import { createPinia } from 'pinia'
-const pinia = createPinia()
-
-const mockCommentBaseUrl: string = 'http://127.0.0.1:4523/m1/5682619-5363514-default/comment'
+const CommentBaseUrl: string = import.meta.env.VITE_API_BASEURL+'/comment'
 
 // 创建一个 axios 实例
 const CommentAxiosInstance = axios.create({
-  baseURL: mockCommentBaseUrl, // 配置基础路由为 https
+  baseURL: CommentBaseUrl, // 配置基础路由为 https
   timeout: 10000, // 请求超时时间
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 CommentAxiosInstance.getCommentsByBlogId = async (BlogId) => {
-  const response = await CommentAxiosInstance.get('/getCommentsByBlogId', {
+  const response = (await CommentAxiosInstance.get('/getCommentsByBlogId', {
     params: {
-      id: BlogId
-    }
-  })
+      id: BlogId,
+    },
+  })) as Response
   return response
 }
 
 CommentAxiosInstance.addComment = async (BlogId, comment) => {
-  const response = await CommentAxiosInstance.post('/addcomment', {
+  const response = (await CommentAxiosInstance.post('/addcomment', {
     Id: BlogId,
-    comment: comment
-  })
+    comment: comment,
+  })) as Response
   return response
 }
 // 设置请求拦截器
@@ -51,8 +51,17 @@ CommentAxiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
+
+CommentAxiosInstance.getUserIdByCommentId = async (CommentId) => {
+  const response = (await CommentAxiosInstance.get('/getUserIdByCommentId', {
+    params: {
+      id: CommentId,
+    },
+  })) as Response
+  return response
+}
 
 // 设置响应拦截器
 CommentAxiosInstance.interceptors.response.use(
@@ -75,6 +84,6 @@ CommentAxiosInstance.interceptors.response.use(
       console.error('Request error:', error)
       return Promise.reject(error)
     }
-  }
+  },
 )
 export default CommentAxiosInstance

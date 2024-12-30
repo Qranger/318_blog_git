@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 // 上传图片的接口 URL
-const uploadUrl = 'https://picui.cn/api/v1/upload'
-
+const uploadUrl = import.meta.env.VITE_UPLOAD_URL
+const Authorization = import.meta.env.VITE_UPLOAD_AUTHORIZATION
 
 /**
  * 上传图片文件到指定 URL
@@ -18,10 +18,12 @@ const uploadImage = async (file: File): Promise<string> => {
       headers: {
         'Content-Type': 'multipart/form-data',
         Accept: 'application/json',
-        Authorization: 'Bearer 352|FSCb3qXhcE9qs4hkgXGQ9WGAWLRJPxKlO4VpE3lP'
+        Authorization: Authorization
       }
     })
-    return response.data.data?.links?.url
+    // const m =response.data.data.links?.url
+    // console.log('图片url',m)
+    return response.data?.data.links?.url
   } catch (error) {
     console.error('图片上传失败:', error)
     throw new Error('图片上传失败，请稍后重试')

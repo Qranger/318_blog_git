@@ -1,9 +1,7 @@
 // src/services/axios.js
 
 //mock 基础路由
-const mockBaseUrl: string = 'http://127.0.0.1:4523/m1/5682619-5363514-default';
-
-// Strig baseUrl='http://localhost:8080'
+const mockBaseUrl: string = import.meta.env.VITE_API_BASEURL
 
 
 import axios from 'axios'

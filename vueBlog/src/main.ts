@@ -1,4 +1,4 @@
-// 导入样式
+// // 导入样式
 import './assets/main.css'
 import 'element-plus/dist/index.css'
 
@@ -20,6 +20,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 导入 Pinia 和插件
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 
@@ -44,5 +45,9 @@ config({
   }
 })
 
+
+// //台风css
+import './assets/styles.css'
 // 挂载应用实例
 app.mount('#app')
+

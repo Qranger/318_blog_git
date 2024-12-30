@@ -1,26 +1,25 @@
 import axios from 'axios'
 import { useUserStore } from '@/stores/userStore'
 import type { Blog } from '@/types/Blog'
+import type { Response } from '@/types/Response'
 
 declare module 'axios' {
   interface AxiosInstance {
-    getBlogById(id: number): Promise<unknown>
-    getUserAllSummaryBlogs(id: number): Promise<unknown>
-    searchBlogs(blogName: string): Promise<unknown>
-    addBlog(blog: Blog): Promise<unknown>
-    deleteBlog(blogId: number): Promise<unknown>
-    updateBlog(blog: Blog): Promise<unknown>
+    getBlogById(id: number): Promise<Response>
+    getUseridByBlogid(id: number): Promise<Response>
+    getUserAllSummaryBlogs(id: number): Promise<Response>
+    searchBlogs(blogName: string): Promise<Response>
+    addBlog(blog: Blog): Promise<Response>
+    deleteBlog(blogId: number): Promise<Response>
+    updateBlog(blog: Blog): Promise<Response>
   }
 }
 
-import { createPinia } from 'pinia'
-const pinia = createPinia()
-
-const mockBlogBaseUrl: string = 'http://127.0.0.1:4523/m1/5682619-5363514-default/blog'
+const BlogBaseUrl: string = import.meta.env.VITE_API_BASEURL + '/blog'
 
 // 创建一个 axios 实例
 const BlogAxiosInstance = axios.create({
-  baseURL: mockBlogBaseUrl, // 配置基础路由为 https
+  baseURL: BlogBaseUrl, // 配置基础路由为 https
   timeout: 10000, // 请求超时时间
   headers: {
     'Content-Type': 'application/json',
@@ -28,17 +27,24 @@ const BlogAxiosInstance = axios.create({
 })
 
 //查询具体id 对应的blog
-BlogAxiosInstance.getBlogById = async (id) => {
-  const response = await BlogAxiosInstance.get('/getBlogById', {
+BlogAxiosInstance.getUseridByBlogid = async (id) => {
+  const response = (await BlogAxiosInstance.get('/getUseridByBlogid', {
     params: { id: id },
-  })
+  })) as Response
+  return response
+}
+
+BlogAxiosInstance.getBlogById = async (id) => {
+  const response = (await BlogAxiosInstance.get('/getBlogById', {
+    params: { id: id },
+  })) as Response
   return response
 }
 
 BlogAxiosInstance.getUserAllSummaryBlogs = async (id) => {
-  const response = await BlogAxiosInstance.get('/getUserAllSummaryBlogs', {
+  const response = (await BlogAxiosInstance.get('/getUserAllSummaryBlogs', {
     params: { id: id },
-  })
+  })) as Response
   return response
 }
 
@@ -47,26 +53,26 @@ BlogAxiosInstance.searchBlogs = async (blogName) => {
   const params = blogName ? { name: blogName } : {}
 
   // 发起请求
-  const response = await BlogAxiosInstance.get('/searchBlogs', { params })
+  const response = (await BlogAxiosInstance.get('/searchBlogs', { params })) as Response
   return response
 }
 
 BlogAxiosInstance.addBlog = async (Blog) => {
   const formData = Blog
-  const response = await BlogAxiosInstance.post('/addBlog', formData)
+  const response = (await BlogAxiosInstance.post('/addBlog', formData)) as Response
   return response
 }
 
 BlogAxiosInstance.deleteBlog = async (BlogId) => {
-  const response = await BlogAxiosInstance.delete('/deleteBlog', {
+  const response = (await BlogAxiosInstance.delete('/deleteBlog', {
     params: { id: BlogId },
-  })
+  })) as Response
   return response
 }
 
 BlogAxiosInstance.updateBlog = async (Blog) => {
   const formData = Blog
-  const response = await BlogAxiosInstance.post('/updateBlog', formData)
+  const response = (await BlogAxiosInstance.post('/updateBlog', formData)) as Response
   return response
 }
 

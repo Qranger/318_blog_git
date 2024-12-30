@@ -2,56 +2,54 @@ import axios from 'axios'
 import { useUserStore } from '@/stores/userStore'
 import type { User } from '@/types/User'
 
+import type { Response } from '@/types/Response'
+
 declare module 'axios' {
   export interface AxiosInstance {
-    login: (user: User) => Promise<unknown>
-    register:(user: User) => Promise<unknown>
-    getUserById: (userId: number) => Promise<unknown>
-    updateUser: (user: User) => Promise<unknown>
+    login: (user: User) => Promise<Response>
+    register: (user: User) => Promise<Response>
+    getUserById: (userId: number) => Promise<Response>
+    updateUser: (user: User) => Promise<Response>
   }
 }
 
-import { createPinia } from 'pinia'
-const pinia = createPinia()
-
-const mockUserBaseUrl: string = 'http://127.0.0.1:4523/m1/5682619-5363514-default/user'
-
+const UserBaseUrl: string = import.meta.env.VITE_API_BASEURL + '/user'
 
 // 创建一个 axios 实例
 const UserAxiosInstance = axios.create({
-  baseURL: mockUserBaseUrl, // 配置基础路由为 https
+  baseURL: UserBaseUrl, // 配置基础路由为 https
   timeout: 10000, // 请求超时时间
   headers: {
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 
 // 添加 Login 方法
 UserAxiosInstance.login = async (user) => {
-  const formData=user
-  const response = await UserAxiosInstance.post('/login', formData)
+  const formData = user
+  const response = (await UserAxiosInstance.post('/login', formData)) as Response
   return response
 }
 
 // 添加 register 方法
 UserAxiosInstance.register = async (user) => {
-  const formData=user
-  const response = await UserAxiosInstance.post('/register', formData)
+  const formData = user
+  const response = (await UserAxiosInstance.post('/register', formData)) as Response
   return response
 }
 
 //通过 用户id 获取用户信息
 UserAxiosInstance.getUserById = async (userId) => {
-  const response = await UserAxiosInstance.get('/getUserById', {
+  const response = (await UserAxiosInstance.get('/getUserById', {
     params: { id: userId },
-  })
+  })) as Response
   return response
 }
 
 //设置 更新 User信息
 UserAxiosInstance.updateUser = async (user) => {
-  const formData=user
-  const response = await UserAxiosInstance.post('/updateUser', formData)
+  const formData = user
+  const response = (await UserAxiosInstance.post('/updateUser', formData)) as Response
   return response
 }
 
@@ -68,7 +66,7 @@ UserAxiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error)
-  }
+  },
 )
 
 // 设置响应拦截器
@@ -92,6 +90,6 @@ UserAxiosInstance.interceptors.response.use(
       console.error('Request error:', error)
       return Promise.reject(error)
     }
-  }
+  },
 )
 export default UserAxiosInstance

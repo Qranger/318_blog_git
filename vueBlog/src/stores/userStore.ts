@@ -6,7 +6,7 @@ export const useUserStore = defineStore(
   () => {
     const User = ref({
       id: 0,
-      email: '',
+      name: '',
       avatar: ''
     })
     const UserToken = ref('')
@@ -16,7 +16,7 @@ export const useUserStore = defineStore(
     function initializeStore() {
       User.value = {
         id: 0,
-        email: '',
+        name: '',
         avatar: ''
       }
       UserToken.value = ''
@@ -24,7 +24,7 @@ export const useUserStore = defineStore(
       visitId.value = 0
     }
 
-    return { UserToken, CurrentArticleId: CurrentBlogId, User, visitUserId: visitId, initializeStore }
+    return { UserToken,  CurrentBlogId, User, visitUserId: visitId, initializeStore }
   },
   {
     persist: true

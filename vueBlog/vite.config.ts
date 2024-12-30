@@ -5,15 +5,18 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import path from 'path'
 import tsconfigPaths from 'vite-tsconfig-paths'
 
-// 强制类型推断为插件类型
-import { Plugin } from 'vite'
+import Components from 'unplugin-vue-components/vite'
+import { UndrawUiResolver } from 'undraw-ui/es/resolvers'
 
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
     vueDevTools(),
-    tsconfigPaths() as Plugin // 使用类型断言
+    tsconfigPaths(), // 使用类型断言
+    Components({
+      resolvers: [UndrawUiResolver],
+    }),
   ],
   resolve: {
     alias: {
