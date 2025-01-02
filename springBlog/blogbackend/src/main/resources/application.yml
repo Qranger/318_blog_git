@@ -9,9 +9,9 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/job?serverTimezone=UTC
+      url: jdbc:mysql://10.84.207.40:3306/blog_db?serverTimezone=GMT%2B8&useSSL=false
       username: root
-      password: 222333
+      password: 2775313450
   redis:
     host: localhost
     port: 6379
