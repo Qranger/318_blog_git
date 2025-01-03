@@ -56,10 +56,21 @@ public class UserService {
         }
     }
 
-    public boolean changePassword(String username, String oldPassword, String newPassword) {
-        User user = doLogin(username , oldPassword);
+    public boolean changePassword(Integer id, String newPassword) {
+        User user =  userMapper.selectById(id);
         if(user!=null){
             user.setPassword(newPassword);
+            userMapper.updateById(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateInfo(Integer id, String username, String avatar) {
+        User user =  userMapper.selectById(id);
+        if(user!=null){
+            user.setUsername(username);
+            user.setAvatar(avatar);
             userMapper.updateById(user);
             return true;
         }

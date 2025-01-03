@@ -2,7 +2,6 @@ package com.whut.blogbackend.controller;
 
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whut.blogbackend.entity.Result;
 import com.whut.blogbackend.entity.User;
@@ -34,7 +33,8 @@ public class UserController {
         User user = userService.doLogin(username, password);
         if (user != null) {
             StpUtil.login(user.getId());
-            return ResponseEntity.ok(Result.ok().data(StpUtil.getTokenInfo().tokenValue).message("登录成功"));
+            user.setToken(StpUtil.getTokenInfo().tokenValue);
+            return ResponseEntity.ok(Result.ok().data(user).message("登录成功"));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Result.fail().message("登录失败，用户名或密码错误"));
         }
@@ -42,13 +42,16 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<Result<Object>> doRegister(@RequestBody JSONObject json) {
-        User user = JSON.toJavaObject(json.getJSONObject("user") , User.class);
+        User user = new User();
+        user.setUsername(json.getString("name"));
+        user.setPassword(json.getString("password"));
+        user.setAvatar(json.getString("avatar"));
         System.out.println(user);
 
         log.info("用户注册：{}", user.getUsername());
         boolean flag = userService.doRegister(user);
         if (flag) {
-            return ResponseEntity.ok(Result.ok().message("注册成功"));
+            return ResponseEntity.ok(Result.ok().data(user).message("注册成功"));
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Result.fail().message("用户名重复，注册失败"));
         }
@@ -72,20 +75,31 @@ public class UserController {
         }
     }
 
-    @PostMapping("/changePassword")
+    @PostMapping("/updateSecurityInfo")
     public Result<Object> changePassword(@RequestBody JSONObject json) {
-        String username = json.getString("username");
-        String oldPassword = json.getString("oldPassword");
+        Integer uid = Tool.tokenToId();
         String newPassword = json.getString("newPassword");
 
-        boolean changed = userService.changePassword(username, oldPassword, newPassword);
+        boolean changed = userService.changePassword(uid, newPassword);
         if (changed) {
             return Result.ok().message("密码修改成功").data(true);
         } else {
             return Result.fail().message("密码修改失败，请确认原密码是否正确").data(false);
         }
     }
+    @PostMapping("/updateBaseInfo")
+    public Result<Object> updateUser(@RequestBody JSONObject json) {
+        Integer uid = Tool.tokenToId();
+        String username = json.getString("name");
+        String avatar = json.getString("avatar");
 
+        boolean changed = userService.updateInfo(uid, username, avatar);
+        if (changed) {
+           return Result.ok().message("信息修改成功").data(true);
+        } else {
+            return Result.fail().message("信息修改失败").data(false);
+       }
+    }
     @GetMapping("/getUser")
     public Result<Object> getUser() {
         Integer uid = Tool.tokenToId();
@@ -97,9 +111,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getOtherUser")
-    public Result<Object> getOtherUser(@RequestParam Integer other_uid) {
-        User user = userService.getUser(other_uid);
+    @GetMapping("/getUserById")
+    public Result<Object> getOtherUser(@RequestParam Integer id) {
+        User user = userService.getUser(id);
         if (user != null) {
             return Result.ok().data(user).message("获取用户信息成功");
         } else {
