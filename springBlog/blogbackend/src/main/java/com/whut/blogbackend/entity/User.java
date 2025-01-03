@@ -22,7 +22,7 @@ public class User {
     private Integer isDeleted;
 
     @TableField(exist = false) // 不映射到数据库表字段
-    private List<Article> articles;
+    private List<Blog> blogs;
 
     @TableField(exist = false)
     private String token;

@@ -7,18 +7,19 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 @Data
-@TableName(value = "articles")
-public class Article {
+@TableName(value = "blogs")
+public class Blog {
     @TableId(value="id",type= IdType.AUTO)
     private Integer id;
-    private String mdText;
+    private Integer userId;
+    private String content;
     private String title;
     private String titleImg;
 
     @TableLogic
-    private Integer deleted;
+    private Integer isDeleted;
 
     public void showSummaryMark(){
-        this.mdText=null;
+        this.content=null;
     }
 }
