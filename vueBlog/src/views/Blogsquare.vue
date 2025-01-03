@@ -58,14 +58,11 @@ const blankArticle = {
 const ArticleList: Ref<Blog[]> = ref([])
 
 //查询自己文章
-const getselfBlogs = async () => {
-  console.log('getUserAllArticle')
-  const id = Userstore.User.id
+const getAllBlogs = async () => {
+  console.log('getAllBlogs')
   try {
-    const response: Response = await BlogAxiosInstance.getUserAllSummaryBlogs(id)
+    const response: Response = await BlogAxiosInstance.getAllBlog()
     const data = response.data as Blog[]
-
-    // console.log(data)
     ArticleList.value = data
     // console.log(ArticleList.value)
   } catch (error) {
@@ -97,7 +94,7 @@ const filteredArticles = computed(() => {
 
 onMounted(async () => {
   getSelfUser()
-  getselfBlogs()
+  getAllBlogs()
 })
 </script>
 

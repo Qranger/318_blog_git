@@ -12,6 +12,7 @@ declare module 'axios' {
     addBlog(blog: Blog): Promise<Response>
     deleteBlog(blogId: number): Promise<Response>
     updateBlog(blog: Blog): Promise<Response>
+    getAllBlog(): Promise<Response>
   }
 }
 
@@ -38,6 +39,11 @@ BlogAxiosInstance.getBlogById = async (id) => {
   const response = (await BlogAxiosInstance.get('/getBlogById', {
     params: { id: id },
   })) as Response
+  return response
+}
+
+BlogAxiosInstance.getAllBlog = async () => {
+  const response = (await BlogAxiosInstance.get('/getAllSummaryBlogs', {})) as Response
   return response
 }
 

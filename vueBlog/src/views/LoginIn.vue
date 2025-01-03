@@ -54,12 +54,15 @@ const LoginIn = async () => {
 
 
     Userstore.initializeStore()
-    Userstore.UserToken = response.data.token
-    Userstore.User.id = response.data.user.id
-    Userstore.User.name = response.data.user.name
-    Userstore.User.avatar = response.data.user.avatar
 
-    // router.push('MyHome')
+    Userstore.UserToken = response.data.token
+    Userstore.User.id = response.data.id
+    Userstore.User.name = response.data.name
+    Userstore.User.avatar = response.data.avatar
+
+    // 跳转到首页
+
+    router.push('MyHome')
   } catch (error) {
     console.error('Login failed', error)
     form.password = ''

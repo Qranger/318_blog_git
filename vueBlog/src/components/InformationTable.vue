@@ -78,10 +78,10 @@ const initial = () => {
   userInform.value.id = Userstore.User.id
 }
 
-const message = () => {
+const message = (str: string) => {
   ElNotification({
-    title: '更改成功',
-    message: h('更改成功'),
+    title: str,
+    message: h(str),
   })
 }
 
@@ -89,9 +89,9 @@ const formRef = ref<FormInstance>()
 
 initial()
 const rules = {
-  name: [{ required: true, message: 'Name is required', trigger: 'blur' }],
-  password: [{ required: true, message: 'Password is required', trigger: 'blur' }],
-  oldPassword: [{ required: true, message: 'Password is required', trigger: 'blur' }],
+  name: [{ required: false, message: 'Name is required', trigger: 'blur' }],
+  password: [{ required: false, message: 'Password is required', trigger: 'blur' }],
+  oldPassword: [{ required: false, message: 'Password is required', trigger: 'blur' }],
 }
 
 const updateBaseInfo = async () => {
@@ -101,22 +101,30 @@ const updateBaseInfo = async () => {
       avatar: userInform.value.avatar,
     }
     const response = await UserAxiosInstance.updateBaseInfo(user)
-    message()
+    if (response.success) {
+      message('修改成功')
+    } else {
+      message('账户名重复')
+    }
   } catch (error) {
-    console.error('注册出错,用户名重复', error)
+    message('账户名重复')
   }
 }
 
 const updateSecurityInfo = async () => {
   try {
-    const user= {
+    const user = {
       password: userInform.value.password,
       oldPassword: userInform.value.oldPassword,
     }
-    const response = await UserAxiosInstance.updateBaseInfo(user)
-    message()
+    const response = await UserAxiosInstance.updateSecurityInfo(user)
+    if (response.success) {
+      message('修改成功')
+    } else {
+      message('原密码错误')
+    }
   } catch (error) {
-    console.error('注册出错,用户名重复', error)
+    message('原密码错误')
   }
 }
 
@@ -127,9 +135,10 @@ const onSubmit = () => {
         console.log('submit!')
 
         if (activeName.value == 'first') {
+          console.log('基础信息')
           updateBaseInfo()
-        }
-        else if (activeName.value =='second') {
+        } else if (activeName.value == 'second') {
+          console.log('安全信息')
           updateSecurityInfo()
         }
       } else {
@@ -148,8 +157,7 @@ const clear = () => {
     userInform.value.name = ''
     userInform.value.password = ''
     userInform.value.avatar = ''
-  }
-  else{
+  } else {
     userInform.value.oldPassword = ''
     userInform.value.password = ''
   }

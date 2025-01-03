@@ -1,6 +1,6 @@
 export interface Blog {
   id: number
-  context: string
+  content: string
   title: string
   titleImg: string
 }

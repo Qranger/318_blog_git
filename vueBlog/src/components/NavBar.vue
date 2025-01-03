@@ -125,6 +125,7 @@ const goSquare = () => {
 
 const goBlogEdit = () => {
   console.log('跳转到 BlogEdit')
+  Userstore. CurrentBlogId=0
   router.push('BlogEdit')
 }
 

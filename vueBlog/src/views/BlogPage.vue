@@ -10,7 +10,7 @@
         <p>是否有编辑权限: {{ EditRight }}</p>
       </div>
       <MdArticleCatalog :editorId="id" :scrollElement="scrollElement" />
-      <UserCard v-if="AuthorId != null" :id="AuthorId" />
+      <UserCard v-if="AuthorId != -1" :id="AuthorId" />
     </div>
     <div>
       <el-card style="width: 900px" shadow="hover">
@@ -116,7 +116,7 @@ const getBlog = async () => {
   try {
     const response: Response = await BlogAxiosInstance.getBlogById(Userstore.CurrentBlogId)
     const data = response.data as Blog
-    MdText.value = data.context
+    MdText.value = data.content
   } catch (error) {
     console.error('getBlog failed', error)
   }
@@ -137,14 +137,8 @@ const getAuthorId = async () => {
 const hasEditRightsForBlog = () => {
   console.log('hasEditRightsForBlog')
   if (AuthorId.value == Userstore.User.id) {
-    // console.log('有权限')
-    // console.log(AuthorId.value)
-    // console.log(Userstore.User.id)
     EditRight.value = true
   } else {
-    // console.log('无权限')
-    // console.log(AuthorId.value)
-    // console.log(Userstore.User.id)
     EditRight.value = false
   }
 
@@ -153,7 +147,7 @@ const hasEditRightsForBlog = () => {
 
 const editHandler = () => {
   console.log('editHandler')
-  router.push('ArticleEdit')
+  router.push('BlogEdit')
 }
 
 const deleteHandler = async () => {

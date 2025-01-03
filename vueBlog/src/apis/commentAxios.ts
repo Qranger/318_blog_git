@@ -3,7 +3,6 @@ import { useUserStore } from '@/stores/userStore'
 import type { Comment } from '@/types/Comment'
 
 import type { Response } from '@/types/Response'
-
 declare module 'axios' {
   export interface AxiosInstance {
     getCommentsByBlogId: (BlogId: number) => Promise<Response>
@@ -32,8 +31,8 @@ CommentAxiosInstance.getCommentsByBlogId = async (BlogId) => {
 }
 
 CommentAxiosInstance.addComment = async (BlogId, comment) => {
-  const response = (await CommentAxiosInstance.post('/addcomment', {
-    Id: BlogId,
+  const response = (await CommentAxiosInstance.post('/addComment', {
+    id: BlogId,
     comment: comment,
   })) as Response
   return response

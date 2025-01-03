@@ -1,6 +1,6 @@
 export interface Comment {
   id: number | null
-  context: string
+  content: string
   time: string
   parentId: number | null
   responseId: number | null
@@ -8,7 +8,7 @@ export interface Comment {
 
 export interface CommentPlus {
   id: number | null
-  context: string
+  content: string
   time: string
   parentId: number | null
   responseId: number | null

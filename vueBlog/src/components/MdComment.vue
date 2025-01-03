@@ -17,66 +17,9 @@ import { useUserStore } from '@/stores/userStore'
 const Userstore = useUserStore()
 
 import CommentAxiosInstance from '@/apis/commentAxios'
+import UserAxiosInstance from '@/apis/userAxios'
 
 import type { User } from '@/types/User'
-
-//模拟数据
-const comments = [
-  {
-    id: '1',
-    parentId: null,
-    uid: '2',
-    content:
-      '床前明月光，疑是地上霜。<br>举头望明月，低头思故乡。<img class="a" id="a" style="width: 50px" src=a onerror="window.location.href=\'https://baidu.com\'">',
-    createTime: new Time().add(-1, 'day'),
-    user: {
-      username: '李白 [唐代]',
-      avatar: 'https://static.juzicon.com/images/image-231107185110-DFSX.png',
-      homeLink: '/1',
-    },
-    reply: {
-      total: 1,
-      list: [
-        {
-          id: '11',
-          parentId: 1,
-          uid: '1',
-          content: '[狗头][微笑2]',
-          createTime: new Time().add(-3, 'day'),
-          user: {
-            username: '杜甫 [唐代]',
-            avatar: 'https://static.juzicon.com/images/image-180327173755-IELJ.jpg',
-          },
-        },
-      ],
-    },
-  },
-  {
-    id: '2',
-    parentId: null,
-    uid: '3',
-    content:
-      '国破山河在，城春草木深。<br>感时花溅泪，恨别鸟惊心。<br>烽火连三月，家书抵万金。<br>白头搔更短，浑欲不胜簪。',
-    createTime: new Time().add(-5, 'day'),
-    user: {
-      username: '杜甫 [唐代]',
-      avatar: 'https://static.juzicon.com/images/image-180327173755-IELJ.jpg',
-    },
-  },
-  {
-    id: '3',
-    parentId: null,
-    uid: '2',
-    content: '日照香炉生紫烟，遥看瀑布挂前川。<br>飞流直下三千尺，疑是银河落九天。',
-    likes: 34116,
-    createTime: new Time().add(-2, 'month'),
-    user: {
-      username: '李白 [唐代]',
-      avatar: 'https://static.juzicon.com/images/image-231107185110-DFSX.png',
-      homeLink: '/1',
-    },
-  },
-]
 
 interface CommentShow {
   id: number
@@ -115,7 +58,7 @@ const convertToCommentShow = (comment: CommentPlus): CommentShow => {
     id: comment.id !== null ? comment.id : 0,
     parentId: comment.parentId,
     uid: 0,
-    content: comment.context,
+    content: comment.content,
     createTime: comment.time,
     reply: {
       total: 0,
@@ -127,8 +70,6 @@ const convertToCommentShow = (comment: CommentPlus): CommentShow => {
       homeLink: '',
     },
   }
-  // console.log('转换后的')
-  // console.log(mid)
   return mid
 }
 
@@ -138,6 +79,22 @@ watch(MdComment, (newValue) => {
   config.comments = newValue // 将新的值赋给 config.comments
 })
 
+const fetchComments = async () => {
+  // console.log('getCommentsByArticleId')
+  const BlogId = Userstore.CurrentBlogId
+  console.log('fetchComments')
+  try {
+    const response: Response = await CommentAxiosInstance.getCommentsByBlogId(BlogId)
+    const responceData = response.data
+    const CommentPlusList: CommentPlus[] = await setCommentsUser(responceData)
+
+    console.log('CommentPlusList', CommentPlusList)
+    MdComment.value = await organizeComments(CommentPlusList)
+  } catch (error) {
+    console.error('getCommentsByArticleId failed', error)
+  }
+}
+
 const organizeComments = async (comments: CommentPlus[]): Promise<CommentShow[]> => {
   const commentMap = new Map<number, CommentShow>()
   const organized: CommentShow[] = []
@@ -146,6 +103,7 @@ const organizeComments = async (comments: CommentPlus[]): Promise<CommentShow[]>
     const commentShow = convertToCommentShow(comment)
     commentMap.set(comment.id!, commentShow)
   }
+
   commentMap.forEach((comment) => {
     if (comment.parentId != null) {
       const parent = commentMap.get(comment.parentId)
@@ -155,39 +113,22 @@ const organizeComments = async (comments: CommentPlus[]): Promise<CommentShow[]>
       }
     }
   })
+
   commentMap.forEach((comment) => {
     if (comment.parentId == null) {
       organized.push(comment)
     }
   })
+
   return organized
-}
-
-const fetchComments = async () => {
-  console.log('getCommentsByArticleId')
-  const BlogId = Userstore.CurrentBlogId
-  try {
-    const response: Response = await CommentAxiosInstance.getCommentsByBlogId(BlogId)
-    const data = response.data
-    const responceData: CommentPlus[] = data
-
-    console.log(responceData)
-    const CommentPlusList: CommentPlus[] = await setCommentsUser(responceData)
-
-    MdComment.value = await organizeComments(CommentPlusList)
-  } catch (error) {
-    console.error('getCommentsByArticleId failed', error)
-  }
 }
 
 const setCommentsUser = async (CommentPlusList: CommentPlus[]) => {
   for (const comment of CommentPlusList) {
     // const response: Response = await UserAxiosInstance.getOtherUser(comment.uid!)
-    const response: Response = await CommentAxiosInstance.getUserIdByCommentId(comment.uid!)
+    const userId = (await CommentAxiosInstance.getUserIdByCommentId(comment.id!)).data.id
+    const response = await UserAxiosInstance.getUserById(userId)
     const user: User = response.data
-
-    // console.log(user)
-
     const mid = {
       name: user.name!,
       avatar: user.avatar!,
@@ -214,28 +155,38 @@ onMounted(() => {
   // config.comments = MdComment.value
 })
 
-const addComment = async (BlogId: number, parentId: number | null, context: string) => {
+const addComment = async (BlogId: number, parentId: number | null, content: string) => {
   console.log('addComment')
   const comment: Comment = {
     parentId: parentId,
-    context: context,
+    content: content,
     time: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
     responseId: null,
     id: null,
   }
   try {
     const response = await CommentAxiosInstance.addComment(BlogId, comment)
-    // console.log(response)
+    return response.data
   } catch (error) {
     console.error('addComment failed', error)
   }
 }
 
 // 提交评论事件
-const submit = ({ content, parentId, files, finish }: SubmitParamApi) => {
-  // console.log('提交评论: ' + content, parentId, files)
+const submit = ({ content, parentId, finish }: CommentSubmitApi) => {
+  let id = null
+
+  if (parentId === null) {
+    console.log('评论成功', content, parentId)
+    const data = addComment(Userstore.CurrentBlogId, null, content)
+    id = data.id
+  } else {
+    const data = addComment(Userstore.CurrentBlogId, Number(parentId), content)
+    id = data.id
+  }
+
   const comment: CommentApi = {
-    id: '',
+    id: id,
     parentId: parentId,
     uid: config.user.id,
     content: content,
@@ -245,11 +196,6 @@ const submit = ({ content, parentId, files, finish }: SubmitParamApi) => {
       avatar: config.user.avatar,
     },
     reply: null,
-  }
-  if (parentId === null) {
-    addComment(Userstore.CurrentBlogId, null, content)
-  } else {
-    addComment(Userstore.CurrentBlogId, Number(parentId), content)
   }
 
   finish(comment)

@@ -20,7 +20,7 @@
 import { MdEditor } from 'md-editor-v3'
 import 'md-editor-v3/lib/style.css'
 import uploadImage from '@/apis/uploadImage'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import UploadImageComponent from '@/components/UploadImgComponent.vue'
 
 import BlogAxiosInstance from '@/apis/blogAxios'
@@ -34,6 +34,16 @@ const mdtext_mode = defineModel()
 
 const titleImgUrl = ref('')
 const title = ref('')
+
+const initial = async () => {
+  if (Userstore.CurrentBlogId != 0) {
+    const response = await BlogAxiosInstance.getBlogById(Userstore.CurrentBlogId)
+    console.log(response)
+    title.value = response.data?.title
+    titleImgUrl.value = response.data?.titleImg
+  }
+}
+
 
 const onUploadImg = async (files, callback) => {
   console.log('onUploadImg')
@@ -59,7 +69,7 @@ const addArticle = async () => {
   const blog = {
     id: 0,
     title: title.value,
-    context: mdtext_mode.value,
+    content: mdtext_mode.value,
     titleImg: titleImgUrl.value,
   }
   try {
@@ -74,7 +84,7 @@ const updataArticle = async () => {
   const blog = {
     id: Userstore.CurrentBlogId,
     title: title.value,
-    context: mdtext_mode.value,
+    content: mdtext_mode.value,
     titleImg: titleImgUrl.value,
   }
 
@@ -87,6 +97,11 @@ const updataArticle = async () => {
     console.error('updata failed', error)
   }
 }
+
+onMounted(() => {
+  initial()
+})
+
 </script>
 
 <style scoped>
@@ -96,5 +111,4 @@ const updataArticle = async () => {
   flex-direction: column;
   height: 80vh;
 }
-
 </style>

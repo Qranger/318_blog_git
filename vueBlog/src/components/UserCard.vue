@@ -35,7 +35,7 @@ const getSelfUser = async () => {
     user.value.id = data.id!
     user.value.name = data.name!
     user.value.avatar = data.avatar!
-    console.log(user)
+    // console.log(user)
   } catch (error) {
     console.error('getUser', error)
   }

@@ -9,14 +9,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref ,onMounted} from 'vue'
 import MdBlogEditor from '@/components/MdBlogEditor.vue'
 
 import BlogAxiosInstance from '@/apis/blogAxios'
 
-import type { AxiosResponse } from 'axios'
-
-import type { Blog } from '@/types/Blog'
 import type { Response } from '@/types/Response'
 
 import { useUserStore } from '@/stores/userStore'
@@ -30,15 +27,17 @@ const getArticle = async () => {
   if (Userstore.CurrentBlogId != 0) {
     try {
       const response = (await BlogAxiosInstance.getBlogById(Userstore.CurrentBlogId)) as Response
-      console.log(response)
-      text.value = response.data?.context
+      // console.log(response)
+      text.value = response.data?.content
     } catch (error) {
       console.error('getArticle failed', error)
     }
   }
 }
 
-getArticle()
+onMounted(() => {
+  getArticle()
+})
 </script>
 
 <style scoped>

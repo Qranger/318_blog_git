@@ -33,7 +33,8 @@ const handleCardClick = () => {
   // 在这里可以定义点击卡片后的行为，例如触发事件或者跳转页面等
 
   if (props.id == 0) {
-    router.push('/BlogPageEdit')
+    Userstore.CurrentBlogId=0
+    router.push('/BlogEdit')
   } else {
     console.log('ArticleSummaryCard clicked!')
     console.log('前往文章 id: ' + props.id)

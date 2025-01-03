@@ -6,7 +6,7 @@ import BlogEdit from '@/views/BlogEdit.vue'
 import BlogPage from '@/views/BlogPage.vue'
 
 import MyHome from '@/views/MyHome.vue'
-
+import BlogSquare from '@/views/BlogSquare.vue'
 
 import experimentTest from '@/components/experimentTest.vue'
 const routePath = [
@@ -29,6 +29,11 @@ const routePath = [
     path: '/MyHome',
     name: 'MyHome',
     component: MyHome
+  },
+  {
+    path: '/Square',
+    name: 'Square',
+    component: BlogSquare
   },
   {
     path: '/test',
