@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.whut.blogbackend.mapper.UserMapper;
 import com.whut.blogbackend.entity.User;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -15,7 +16,7 @@ public class UserService {
 
     public User doLogin(String username, String password){
         QueryWrapper<User> qw = new QueryWrapper<>();
-        qw.eq("username", username);
+        qw.eq("name", username);
         qw.eq("password", password);
         User user = userMapper.selectOne(qw);
         System.out.println(user);
@@ -26,7 +27,7 @@ public class UserService {
         boolean type = false;
         if(user!=null){
             QueryWrapper<User> qw = new QueryWrapper<>();
-            qw.eq("username", user.getUsername());
+            qw.eq("name", user.getName());
             if(userMapper.selectOne(qw) != null){
                 return type;
             }
@@ -56,10 +57,11 @@ public class UserService {
         }
     }
 
-    public boolean changePassword(Integer id, String newPassword) {
+    public boolean changePassword(Integer id, String oldPassword, String newPassword) {
         User user =  userMapper.selectById(id);
-        if(user!=null){
+        if(Objects.equals(user.getPassword(), oldPassword)){
             user.setPassword(newPassword);
+            System.out.println(user);
             userMapper.updateById(user);
             return true;
         }
@@ -69,7 +71,7 @@ public class UserService {
     public boolean updateInfo(Integer id, String username, String avatar) {
         User user =  userMapper.selectById(id);
         if(user!=null){
-            user.setUsername(username);
+            user.setName(username);
             user.setAvatar(avatar);
             userMapper.updateById(user);
             return true;

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.whut.blogbackend.entity.Comment;
 import com.whut.blogbackend.entity.Result;
+import com.whut.blogbackend.entity.User;
 import com.whut.blogbackend.service.CommentService;
 import com.whut.blogbackend.tools.Tool;
 import io.swagger.annotations.ApiOperation;
@@ -42,12 +43,12 @@ public class CommentController {
 
             System.out.println(userId);
             System.out.println(blogId);
-            comment.setUid(userId);
+            comment.setUserId(userId);
             comment.setBlogId(blogId);
             System.out.println(comment);
-            boolean added = commentService.addComment(comment);
-            if (added) {
-                return Result.ok().message("评论添加成功").data(true);
+            Comment result = commentService.addComment(comment);
+            if (result!=null) {
+                return Result.ok().message("评论添加成功").data(result);
             } else {
                 return Result.fail().message("评论添加失败，请稍后重试").data(false);
             }
@@ -59,9 +60,9 @@ public class CommentController {
     @GetMapping("/getUserIdByCommentId")
     public Result<Object> getUserIdByCommentId(Integer id) {
         try{
-            Integer uid = commentService.getUserIdByCommentId(id);
-            if (uid!=null) {
-                return Result.ok().message("查询成功").data(uid);
+            User user = commentService.getUserIdByCommentId(id);
+            if (user!=null) {
+                return Result.ok().message("查询成功").data(user);
             } else {
                 return Result.fail().message("查询失败，该评论不存在").data(false);
             }

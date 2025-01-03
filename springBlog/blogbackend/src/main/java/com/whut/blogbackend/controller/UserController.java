@@ -36,19 +36,19 @@ public class UserController {
             user.setToken(StpUtil.getTokenInfo().tokenValue);
             return ResponseEntity.ok(Result.ok().data(user).message("登录成功"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Result.fail().message("登录失败，用户名或密码错误"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.fail().message("登录失败，用户名或密码错误"));
         }
     }
 
     @PostMapping("/register")
     public ResponseEntity<Result<Object>> doRegister(@RequestBody JSONObject json) {
         User user = new User();
-        user.setUsername(json.getString("name"));
+        user.setName(json.getString("name"));
         user.setPassword(json.getString("password"));
         user.setAvatar(json.getString("avatar"));
         System.out.println(user);
 
-        log.info("用户注册：{}", user.getUsername());
+        log.info("用户注册：{}", user.getName());
         boolean flag = userService.doRegister(user);
         if (flag) {
             return ResponseEntity.ok(Result.ok().data(user).message("注册成功"));
@@ -78,9 +78,10 @@ public class UserController {
     @PostMapping("/updateSecurityInfo")
     public Result<Object> changePassword(@RequestBody JSONObject json) {
         Integer uid = Tool.tokenToId();
-        String newPassword = json.getString("newPassword");
+        String oldPassword = json.getString("oldPassword");
+        String newPassword = json.getString("password");
 
-        boolean changed = userService.changePassword(uid, newPassword);
+        boolean changed = userService.changePassword(uid, oldPassword , newPassword);
         if (changed) {
             return Result.ok().message("密码修改成功").data(true);
         } else {

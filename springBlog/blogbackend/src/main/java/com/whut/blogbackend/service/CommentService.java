@@ -3,6 +3,7 @@ package com.whut.blogbackend.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.whut.blogbackend.entity.Blog;
 import com.whut.blogbackend.entity.Comment;
+import com.whut.blogbackend.entity.User;
 import com.whut.blogbackend.mapper.CommentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,13 +35,13 @@ public class CommentService {
         return null;
 
     }
-    public boolean addComment(Comment comment) {
+    public Comment addComment(Comment comment) {
         if(comment != null){
             commentMapper.insert(comment);
             System.out.println(comment);
-            return true;
+            return comment;
         }
-        return false;
+        return null;
     }
 
 //    public boolean deleteComment(Integer userId, Integer commentId){
@@ -51,8 +52,10 @@ public class CommentService {
 //        }
 //        return false;
 //    }
-    public Integer getUserIdByCommentId(Integer id){
-        return commentMapper.selectById(id).getUserId();
+    public User getUserIdByCommentId(Integer id){
+        User user = new User();
+        user.setId(commentMapper.selectById(id).getUserId());
+        return user;
     }
 //    public boolean certifyComment(Integer uid, Integer cid){
 //        QueryWrapper<Comment> qw = new QueryWrapper<>();

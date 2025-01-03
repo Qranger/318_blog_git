@@ -18,7 +18,4 @@ public class Comment {
 
     @TableLogic
     private Integer is_deleted;
-
-    @TableField(exist = false) // 不映射到数据库表字段
-    private Integer uid;
 }

@@ -1,6 +1,7 @@
 package com.whut.blogbackend.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.whut.blogbackend.entity.User;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,12 +48,13 @@ public class BlogController {
                 return Result.fail().message("添加文章失败，请稍后重试").data(false);
             }
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return Result.fail().message("添加文章失败: " + e.getMessage()).data(false);
         }
     }
 
     @ApiOperation(value = "删除文章")
-    @GetMapping("/deleteBlog")
+    @DeleteMapping("/deleteBlog")
     public Result<Object> deleteBlog(Integer id) {
         try {
             Integer uid = StpUtil.getLoginIdAsInt();
@@ -68,8 +70,8 @@ public class BlogController {
     }
 
     @ApiOperation(value = "更新文章")
-    @PostMapping("/updateArticle")
-    public Result<Object> updateArticle(@RequestBody Blog blog) {
+    @PostMapping("/updateBlog")
+    public Result<Object> updateBlog(@RequestBody Blog blog) {
         try {
             Integer uid = StpUtil.getLoginIdAsInt();
 
@@ -136,10 +138,12 @@ public class BlogController {
     public Result<Object> getUserIdByBlogId(Integer id){
         System.out.println("getUserIdByBlogId" + id);
         Integer uid = blogService.getUidByBlogId(id);
+        User user = new User();
+        user.setId(uid);
         if(uid!=null){
-            return Result.ok().message("获取uid成功").data(uid);
+            return Result.ok().message("获取uid成功").data(user);
         }
         else
-            return Result.fail().message("获取uid失败").data(uid);
+            return Result.fail().message("获取uid失败");
     }
 }

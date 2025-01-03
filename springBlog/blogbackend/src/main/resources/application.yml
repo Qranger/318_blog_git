@@ -9,7 +9,7 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://10.84.207.40:3306/blog_db?serverTimezone=GMT%2B8&useSSL=false
+      url: jdbc:mysql://10.84.207.40:3306/blog_db?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
       username: root
       password: 2775313450
   redis:
