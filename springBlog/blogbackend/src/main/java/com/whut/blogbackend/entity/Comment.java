@@ -10,13 +10,14 @@ import java.sql.Timestamp;
 public class Comment {
     @TableId(value="id",type= IdType.AUTO)
     private Integer id;
-    private String context;
+    private Integer userId;
+    private Integer blogId;
+    private String content;
     private Timestamp time;
     private Integer parentId;
-    private Integer responseId;
 
     @TableLogic
-    private Integer deleted;
+    private Integer is_deleted;
 
     @TableField(exist = false) // 不映射到数据库表字段
     private Integer uid;
