@@ -1,15 +1,8 @@
 <template>
-  <div>
-    <el-card
-      style="width: 200px; height: 321px"
-      shadow="hover"
-      @click="handleCardClick"
-      class="custom-card"
-    >
-      <el-avatar :size="50" :src="user.avatar" />
-      <p>用户 id :{{ user.id }}</p>
-      <p>用户名 name : {{ user.name }}</p>
-    </el-card>
+  <div @click="handleCardClick" class="card">
+    <el-avatar :size="50" :src="user.avatar" />
+    <p>用户 id :{{ user.id }}</p>
+    <p>用户名 name : {{ user.name }}</p>
   </div>
 </template>
 
@@ -37,7 +30,7 @@ const getSelfUser = async () => {
   try {
     const response: Response = await UserAxiosInstance.getUserById(props.id)
     const data = response.data as User
-    console.log(data)
+    // console.log(data)
     //pinia 状态库
     user.value.id = data.id!
     user.value.name = data.name!
@@ -67,12 +60,21 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.custom-card {
-  border-radius: 15px; /* 设置四周圆角 */
-  background-color: #e0f7da; /* 设置背景颜色为浅绿色 */
+.card {
+  cursor: pointer;
+  width: 190px;
+  height: 254px;
+  background: rgb(255, 255, 255);
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 255, 0.2);
+  transition: all 0.2s;
+  box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, 0.2);
+
+  display: flex;
+  Padding: 1em;
 }
 
-.custom-card p {
-  font-weight: bold; /* 加粗 */
+.card:hover {
+  box-shadow: -12px 12px 2px -1px rgba(0, 0, 255, 0.2);
 }
 </style>

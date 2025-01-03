@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-card style="width: 800px" shadow="hover" @click="handleCardClick">
+    <el-card
+      class="card bg-base-100 w-72 "
+      style="width: 1200px"
+      shadow="hover"
+      @click="handleCardClick"
+    >
       <div class="card-content">
         <img :src="titleImg" alt="Card Image" class="card-image" />
         <div class="card-text">
@@ -9,17 +14,6 @@
       </div>
     </el-card>
   </div>
-
-  <div class="card glass w-96"  @click="handleCardClick">
-  <figure class= "w-232 h-">
-    <img
-      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
-      alt="car!" />
-  </figure>
-  <div class="card-body">
-    <p>{{ title }}</p>
-  </div>
-</div>
 </template>
 
 <script setup lang="ts">
@@ -57,8 +51,12 @@ const handleCardClick = () => {
 }
 
 .card-image {
-  width: 100px; /* 设置固定宽度 */
-  height: 100px; /* 设置固定高度 */
+  width: 40%; /* 设置固定宽度 */
+  height: 200px; /* 设置固定高度 */
   object-fit: cover; /* 保持图片比例并裁剪 */
+}
+
+.card-text{
+  margin: 100px;
 }
 </style>

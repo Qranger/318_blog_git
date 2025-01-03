@@ -10,6 +10,7 @@ declare module 'vue' {
     ArticleSumaryCard: typeof import('./src/components/ArticleSumaryCard.vue')['default']
     BlogSumaryCard: typeof import('./src/components/BlogSumaryCard.vue')['default']
     ExperimentTest: typeof import('./src/components/experimentTest.vue')['default']
+    InformationTable: typeof import('./src/components/InformationTable.vue')['default']
     MdArticleCatalog: typeof import('./src/components/MdArticleCatalog.vue')['default']
     MdArticlePreview: typeof import('./src/components/MdArticlePreview.vue')['default']
     MdBlogEditor: typeof import('./src/components/MdBlogEditor.vue')['default']

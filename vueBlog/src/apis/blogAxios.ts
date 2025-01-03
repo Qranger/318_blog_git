@@ -50,7 +50,7 @@ BlogAxiosInstance.getUserAllSummaryBlogs = async (id) => {
 
 BlogAxiosInstance.searchBlogs = async (blogName) => {
   // 如果 blogName 存在，则传递它，如果不存在则不传递这个参数
-  const params = blogName ? { name: blogName } : {}
+  const params = blogName ? { title: blogName } : {}
 
   // 发起请求
   const response = (await BlogAxiosInstance.get('/searchBlogs', { params })) as Response

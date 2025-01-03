@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore(
@@ -13,6 +13,8 @@ export const useUserStore = defineStore(
     const CurrentBlogId = ref(0)
     const visitId = ref(0)
 
+    const searchText =ref('')
+
     function initializeStore() {
       User.value = {
         id: 0,
@@ -22,9 +24,10 @@ export const useUserStore = defineStore(
       UserToken.value = ''
       CurrentBlogId.value = 0 // 重置为初始状态
       visitId.value = 0
+      searchText.value =''
     }
 
-    return { UserToken,  CurrentBlogId, User, visitUserId: visitId, initializeStore }
+    return { UserToken,  CurrentBlogId, User, visitUserId: visitId,searchText, initializeStore }
   },
   {
     persist: true

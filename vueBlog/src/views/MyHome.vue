@@ -1,14 +1,11 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-header>
-        <div class="top-div">欢迎来到我的主页~</div>
-      </el-header>
       <el-main>
         <div class="main-content">
           <div class="article-section">
-            <ol v-if="ArticleList != null">
-              <li v-for="article in ArticleList" :key="article.id">
+            <ol v-if="filteredArticles.length > 0">
+              <li v-for="article in filteredArticles" :key="article.id">
                 <BlogSumaryCard
                   :title="article.title"
                   :titleImg="article.titleImg"
@@ -16,15 +13,13 @@
                 />
               </li>
             </ol>
+
             <div v-else>
-              <p>No articles available.</p>
               <BlogSumaryCard
                 :title="blankArticle.title"
                 :titleImg="blankArticle.titleImg"
                 :id="blankArticle.id"
               />
-
-              <!-- 你可以在这里添加其他的内容 -->
             </div>
           </div>
           <div v-if="Userstore.User.id != 0" class="user-section">
@@ -37,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 
 // 导入子组件
 import UserCard from '@/components/UserCard.vue'
@@ -92,6 +87,13 @@ const getSelfUser = async () => {
   }
 }
 
+// 计算属性：筛选符合条件的文章
+const filteredArticles = computed(() => {
+  return ArticleList.value.filter((article) =>
+    article.title.toLowerCase().includes(Userstore.searchText.toLowerCase()),
+  )
+})
+
 onMounted(async () => {
   getSelfUser()
   getselfBlogs()
@@ -102,6 +104,7 @@ onMounted(async () => {
 .main-content {
   display: flex;
   justify-content: space-between;
+  width: 100%;
 }
 
 .article-section {

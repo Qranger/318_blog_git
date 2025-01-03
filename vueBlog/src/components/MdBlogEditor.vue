@@ -1,15 +1,19 @@
 <template>
-  <div>
-    <el-button type="primary" @click="addOrupdataArticle">添加文章</el-button>
-    <el-input v-model="title" style="width: 240px" placeholder="Please input the title" />
-    <el-button @click="titleImgUrl = ''" type="danger" plain>清除图片</el-button>
+  <div class="main-content">
+    <div>
+      <el-button type="primary" @click="addOrupdataArticle">添加文章</el-button>
+      <el-input v-model="title" style="width: 240px" placeholder="Please input the title" />
+      <el-button @click="titleImgUrl = ''" type="danger" plain>清除图片</el-button>
+    </div>
+    <div>
+      <UploadImageComponent v-model:imgUrl="titleImgUrl" />
+      <!-- <p>titleImgUrl :{{ titleImgUrl }}</p> -->
+    </div>
+    <div>
+      <!-- <p>当前ArticleId: {{ Userstore.CurrentBlogId }}</p> -->
+      <MdEditor v-model="mdtext_mode" @onUploadImg="onUploadImg" @onSave="onSaveHandles" />
+    </div>
   </div>
-  <div>
-    <UploadImageComponent v-model:imgUrl="titleImgUrl" />
-    <p>titleImgUrl :{{ titleImgUrl }}</p>
-  </div>
-  <p>当前ArticleId: {{ Userstore.CurrentBlogId }}</p>
-  <MdEditor v-model="mdtext_mode" @onUploadImg="onUploadImg" @onSave="onSaveHandles" />
 </template>
 
 <script setup lang="ts">
@@ -31,7 +35,7 @@ const mdtext_mode = defineModel()
 const titleImgUrl = ref('')
 const title = ref('')
 
-const onUploadImg = async (files , callback) => {
+const onUploadImg = async (files, callback) => {
   console.log('onUploadImg')
   const responseUrls = await Promise.all(files.map((file) => uploadImage(file)))
   console.log(responseUrls)
@@ -52,15 +56,14 @@ const addOrupdataArticle = () => {
 }
 
 const addArticle = async () => {
-
-  const blog ={
-    id:0,
-    title:title.value,
-    context:mdtext_mode.value,
-    titleImg: titleImgUrl.value
+  const blog = {
+    id: 0,
+    title: title.value,
+    context: mdtext_mode.value,
+    titleImg: titleImgUrl.value,
   }
   try {
-    const response= await BlogAxiosInstance.addBlog(blog) as Response
+    const response = (await BlogAxiosInstance.addBlog(blog)) as Response
     console.log(response)
   } catch (error) {
     console.error('addArticle failed', error)
@@ -68,21 +71,30 @@ const addArticle = async () => {
 }
 
 const updataArticle = async () => {
-
-  const blog ={
-    id:Userstore.CurrentBlogId,
-    title:title.value,
-    context:mdtext_mode.value,
-    titleImg: titleImgUrl.value
+  const blog = {
+    id: Userstore.CurrentBlogId,
+    title: title.value,
+    context: mdtext_mode.value,
+    titleImg: titleImgUrl.value,
   }
 
   console.log('updataArticle')
 
   try {
-    const response= await BlogAxiosInstance.updateBlog(blog) as Response
+    const response = (await BlogAxiosInstance.updateBlog(blog)) as Response
     console.log(response)
   } catch (error) {
     console.error('updata failed', error)
   }
 }
 </script>
+
+<style scoped>
+.main-content {
+  display: flex;
+  width: 100vh;
+  flex-direction: column;
+  height: 80vh;
+}
+
+</style>

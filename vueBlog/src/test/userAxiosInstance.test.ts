@@ -69,7 +69,7 @@ describe('API:user 端口连通性测试', () => {
         avatar : 'https://avatars.githubusercontent.com/u/76501413',
       }
 
-      const response = (await UserAxiosInstance.updateUser(user)) as Response
+      const response = (await UserAxiosInstance.updateBaseInfo(user)) as Response
       console.log('updateUser 端口响应')
       console.log(response.data)
     } catch (error) {

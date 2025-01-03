@@ -7,8 +7,9 @@
     http-request:
     list-type="picture-card"
     :auto-upload="true"
-    :limit="2"
+    :limit="1"
     :http-request="myUpload"
+    :on-exceed="handleExceed"
     :show-file-list="false"
   >
     <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
@@ -19,7 +20,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { Plus } from '@element-plus/icons-vue'
-import { type UploadInstance, type UploadRequestOptions, type UploadUserFile } from 'element-plus'
+import { type UploadInstance, type UploadProps, type UploadRequestOptions, type UploadUserFile , type UploadRawFile,genFileId} from 'element-plus'
 
 // import uploadImage from '@/apis/uploadImage'
 import uploadImage_ali from '@/apis/uploadImage-ali'
@@ -30,6 +31,13 @@ const myUpload = async (fileOptions: UploadRequestOptions) => {
   console.log('myUpload')
   const responseUrls = await uploadImage_ali(fileOptions.file)
   imgUrl.value = responseUrls
+}
+
+const handleExceed: UploadProps['onExceed'] = (files) => {
+  upload.value!.clearFiles()
+  const file = files[0] as UploadRawFile
+  file.uid = genFileId()
+  upload.value!.handleStart(file)
 }
 
 const fileList = ref<UploadUserFile[]>([])

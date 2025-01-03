@@ -3,7 +3,7 @@
     <div class="catalog-column">
       <div>
         <input type="file" @change="handleFileUpload" />
-        <el-button type="success" @click="hasEditRightsForBlog">hasEditRightsForBlog</el-button>
+        <!-- <el-button type="success" @click="hasEditRightsForBlog">hasEditRightsForBlog</el-button> -->
         <p>文章 id:{{ Userstore.CurrentBlogId }}</p>
         <p>作者 id:{{ AuthorId }}</p>
         <p>当前用户 id:{{ Userstore.User.id }}</p>
@@ -54,12 +54,12 @@ import router from '@/router/index'
 
 import BlogAxiosInstance from '@/apis/blogAxios'
 
-import { useUserStore } from '@/stores/userStore'
 
 import type { Blog } from '@/types/Blog'
 import type { Response } from '@/types/Response'
 import type { User } from '@/types/User'
 
+import { useUserStore } from '@/stores/userStore'
 const Userstore = useUserStore()
 
 //处理md展示使用的id

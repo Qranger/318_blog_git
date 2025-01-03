@@ -9,7 +9,8 @@ declare module 'axios' {
     login: (user: User) => Promise<Response>
     register: (user: User) => Promise<Response>
     getUserById: (userId: number) => Promise<Response>
-    updateUser: (user: User) => Promise<Response>
+    updateBaseInfo: (user: User) => Promise<Response>
+    updateSecurityInfo:(user: unknown)=> Promise<Response>
   }
 }
 
@@ -47,11 +48,18 @@ UserAxiosInstance.getUserById = async (userId) => {
 }
 
 //设置 更新 User信息
-UserAxiosInstance.updateUser = async (user) => {
+UserAxiosInstance.updateBaseInfo = async (user) => {
   const formData = user
-  const response = (await UserAxiosInstance.post('/updateUser', formData)) as Response
+  const response = (await UserAxiosInstance.post('/updateBaseInfo', formData)) as Response
   return response
 }
+
+UserAxiosInstance.updateSecurityInfo = async (user) => {
+  const formData = user
+  const response = (await UserAxiosInstance.post('/updateSecurityInfo', formData)) as Response
+  return response
+}
+
 
 // 设置请求拦截器
 UserAxiosInstance.interceptors.request.use(
