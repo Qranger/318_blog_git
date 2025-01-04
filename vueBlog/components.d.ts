@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ArticleSumaryCard: typeof import('./src/components/ArticleSumaryCard.vue')['default']
     BlogSumaryCard: typeof import('./src/components/BlogSumaryCard.vue')['default']
     ExperimentTest: typeof import('./src/components/experimentTest.vue')['default']
     InformationTable: typeof import('./src/components/InformationTable.vue')['default']
@@ -15,7 +14,6 @@ declare module 'vue' {
     MdArticlePreview: typeof import('./src/components/MdArticlePreview.vue')['default']
     MdBlogEditor: typeof import('./src/components/MdBlogEditor.vue')['default']
     MdComment: typeof import('./src/components/MdComment.vue')['default']
-    Navbar: typeof import('./src/components/Navbar.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

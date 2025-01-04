@@ -5,7 +5,7 @@
         <div class="main-content">
           <div class="article-section">
             <ol v-if="filteredArticles.length > 0">
-              <li v-for="article in filteredArticles" :key="article.id">
+              <li v-for="article in filteredArticles_sliced" :key="article.id">
                 <BlogSumaryCard
                   :title="article.title"
                   :titleImg="article.titleImg"
@@ -26,13 +26,23 @@
             <UserCard :id="Userstore.User.id" />
           </div>
         </div>
+        <!-- 分页框 -->
+        <el-pagination
+          v-model:current-page="currentPage"
+          :page-size="10"
+          :pager-count="5"
+          background
+          layout="prev, pager, next"
+          :total="filteredArticles.length"
+          @current-change="handleCurrentChange"
+        />
       </el-main>
     </el-container>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 
 // 导入子组件
 import UserCard from '@/components/UserCard.vue'
@@ -85,12 +95,38 @@ const getSelfUser = async () => {
   }
 }
 
+const currentPage = ref(1)
 // 计算属性：筛选符合条件的文章
 const filteredArticles = computed(() => {
+  // 只有当 ArticleList 非空时才进行过滤
+  if (!ArticleList.value || ArticleList.value.length === 0) {
+    return [] // 如果 ArticleList 为 null/undefined 或空数组，返回空数组
+  }
   return ArticleList.value.filter((article) =>
     article.title.toLowerCase().includes(Userstore.searchText.toLowerCase()),
   )
 })
+
+// 计算属性：根据当前页数来筛选文章
+const filteredArticles_sliced = computed(() => {
+  const startIndex = (currentPage.value - 1) * 10
+  const endIndex = Math.min(currentPage.value * 10, filteredArticles.value.length)
+  return filteredArticles.value.slice(startIndex, endIndex)
+})
+
+// 监听 Userstore.searchText 的变化，重置 currentPage
+watch(
+  () => Userstore.searchText,
+  () => {
+    currentPage.value = 1 // 当搜索文本变化时，将当前页重置为第一页
+  },
+)
+
+// 处理页码变化
+const handleCurrentChange = (val: number) => {
+  console.log(`current page: ${val}`)
+  currentPage.value = val // 只需要更新 currentPage，filteredArticles_sliced 会自动重新计算
+}
 
 onMounted(async () => {
   getSelfUser()

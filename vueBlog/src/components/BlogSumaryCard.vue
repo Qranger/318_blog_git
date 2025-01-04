@@ -9,7 +9,7 @@
       <div class="card-content">
         <img :src="titleImg" alt="Card Image" class="card-image" />
         <div class="card-text">
-          <h1>{{ title }}</h1>
+          <el-text class="mx-1" size="large" tag="ins">{{ title }}</el-text>
         </div>
       </div>
     </el-card>
