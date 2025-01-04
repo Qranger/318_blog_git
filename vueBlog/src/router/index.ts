@@ -11,6 +11,10 @@ import BlogSquare from '@/views/BlogSquare.vue'
 import experimentTest from '@/components/experimentTest.vue'
 const routePath = [
   {
+    path: '/',
+    redirect: '/hello' // 设置默认路由为 /hello
+  },
+  {
     path: '/BlogEdit',
     name: 'BlogEdit',
     component: BlogEdit

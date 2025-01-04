@@ -22,8 +22,8 @@
               />
             </div>
           </div>
-          <div v-if="Userstore.User.id != 0" class="user-section">
-            <UserCard :id="Userstore.User.id" />
+          <div v-if="visitUserId != 0" class="user-section">
+            <UserCard :id="visitUserId" />
           </div>
         </div>
       </el-main>
@@ -57,12 +57,13 @@ const blankArticle = {
 
 const ArticleList: Ref<Blog[]> = ref([])
 
-//查询自己文章
-const getselfBlogs = async () => {
+const visitUserId =Userstore.visitUserId
+
+//查询文章
+const getBlogs = async () => {
   console.log('getUserAllArticle')
-  const id = Userstore.User.id
   try {
-    const response: Response = await BlogAxiosInstance.getUserAllSummaryBlogs(id)
+    const response: Response = await BlogAxiosInstance.getUserAllSummaryBlogs(visitUserId)
     const data = response.data as Blog[]
 
     // console.log(data)
@@ -73,31 +74,31 @@ const getselfBlogs = async () => {
   }
 }
 
-const getSelfUser = async () => {
-  try {
-    const id = Userstore.User.id
-    const response: Response = await UserAxiosInstance.getUserById(id)
-    const user = response.data as User
+// const getUser = async () => {
+//   try {
 
-    console.log(user)
-    //pinia 状态库
-    Userstore.User.id = user.id!
-    Userstore.User.name = user.name!
-  } catch (error) {
-    console.error('getUser', error)
-  }
-}
+//     const response: Response = await UserAxiosInstance.getUserById(visitUserId)
+//     const user = response.data as User
 
+//     console.log(user)
+//   } catch (error) {
+//     console.error('getUser', error)
+//   }
+// }
 // 计算属性：筛选符合条件的文章
 const filteredArticles = computed(() => {
+  // 只有当 ArticleList 非空时才进行过滤
+  if (!ArticleList.value || ArticleList.value.length === 0) {
+    return []; // 如果 ArticleList 为 null/undefined 或空数组，返回空数组
+  }
   return ArticleList.value.filter((article) =>
-    article.title.toLowerCase().includes(Userstore.searchText.toLowerCase()),
-  )
-})
+    article.title.toLowerCase().includes(Userstore.searchText.toLowerCase())
+  );
+});
 
 onMounted(async () => {
-  getSelfUser()
-  getselfBlogs()
+  // getUser()
+  getBlogs()
 })
 </script>
 

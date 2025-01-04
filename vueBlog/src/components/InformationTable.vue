@@ -62,6 +62,8 @@ import { h } from 'vue'
 import type { User } from '@/types/User'
 
 import { useUserStore } from '@/stores/userStore'
+
+import { messageSucceed, messageWarning, messageInfo, messageError } from '@/utils/notification'
 const Userstore = useUserStore()
 
 const userInform = ref({
@@ -102,12 +104,12 @@ const updateBaseInfo = async () => {
     }
     const response = await UserAxiosInstance.updateBaseInfo(user)
     if (response.success) {
-      message('修改成功')
+      messageSucceed('修改成功')
     } else {
-      message('账户名重复')
+      messageError('账户名重复')
     }
   } catch (error) {
-    message('账户名重复')
+    messageError('账户名重复')
   }
 }
 
@@ -119,12 +121,12 @@ const updateSecurityInfo = async () => {
     }
     const response = await UserAxiosInstance.updateSecurityInfo(user)
     if (response.success) {
-      message('修改成功')
+      messageSucceed('修改成功')
     } else {
-      message('原密码错误')
+      messageError('原密码错误')
     }
   } catch (error) {
-    message('原密码错误')
+    messageError('原密码错误')
   }
 }
 

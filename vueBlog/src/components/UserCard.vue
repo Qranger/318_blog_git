@@ -44,14 +44,8 @@ const getSelfUser = async () => {
 const handleCardClick = () => {
   // 在这里可以定义点击卡片后的行为，例如触发事件或者跳转页面等
   console.log('UserCard clicked!')
-  if (Userstore.User.id == user.value.id) {
-    //点击的是自己的头像，跳转到自己界面
+  Userstore.visitUserId = user.value.id
     router.push('MyHome')
-  } else {
-    //点击的是别人的头像，跳转到别人界面
-    Userstore.visitUserId = user.value.id
-    router.push('OtherHome')
-  }
 }
 
 onMounted(() => {

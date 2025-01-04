@@ -124,23 +124,39 @@ const organizeComments = async (comments: CommentPlus[]): Promise<CommentShow[]>
 }
 
 const setCommentsUser = async (CommentPlusList: CommentPlus[]) => {
+  const userCache: Map<string, User> = new Map(); // 用于缓存用户数据的 Map，key 是 userId，value 是 User 对象
+
   for (const comment of CommentPlusList) {
-    // const response: Response = await UserAxiosInstance.getOtherUser(comment.uid!)
-    const userId = (await CommentAxiosInstance.getUserIdByCommentId(comment.id!)).data.id
-    const response = await UserAxiosInstance.getUserById(userId)
-    const user: User = response.data
+    // 获取评论的 userId
+    const userId = (await CommentAxiosInstance.getUserIdByCommentId(comment.id!)).data.id;
+
+    // 检查缓存中是否已经存在该 userId
+    let user: User;
+    if (userCache.has(userId)) {
+      // 如果缓存中已有该用户，直接从缓存中获取
+      user = userCache.get(userId)!;
+    } else {
+      // 如果缓存中没有该用户，则通过 API 请求用户数据
+      const response = await UserAxiosInstance.getUserById(userId);
+      user = response.data;
+
+      // 将获取到的用户数据存入缓存
+      userCache.set(userId, user);
+    }
+
+    // 创建用户信息对象
     const mid = {
       name: user.name!,
       avatar: user.avatar!,
-      homeLink: '',
-    }
-    comment.user = mid
-  }
-  // console.log('setCommentsUser')
-  // console.log(CommentPlusList)
-  return CommentPlusList
-}
+      homeLink: '', // 如果有用户主页链接，可以在此处填充
+    };
 
+    // 将用户数据赋值给评论
+    comment.user = mid;
+  }
+
+  return CommentPlusList;
+};
 onMounted(() => {
   // 当前登录用户数据
   config.user = {

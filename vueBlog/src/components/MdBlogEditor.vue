@@ -1,7 +1,7 @@
 <template>
   <div class="main-content">
     <div>
-      <el-button type="primary" @click="addOrupdataArticle">添加文章</el-button>
+      <el-button type="primary" @click="addOrupdataArticle">{{addOrupdataBlog}}</el-button>
       <el-input v-model="title" style="width: 240px" placeholder="Please input the title" />
       <el-button @click="titleImgUrl = ''" type="danger" plain>清除图片</el-button>
     </div>
@@ -28,6 +28,8 @@ import BlogAxiosInstance from '@/apis/blogAxios'
 import type { Response } from '@/types/Response'
 
 import { useUserStore } from '@/stores/userStore'
+
+import { messageSucceed, messageWarning, messageInfo, messageError } from '@/utils/notification'
 const Userstore = useUserStore()
 
 const mdtext_mode = defineModel()
@@ -41,10 +43,15 @@ const initial = async () => {
     console.log(response)
     title.value = response.data?.title
     titleImgUrl.value = response.data?.titleImg
+
+    addOrupdataBlog.value='保存更新'
+  }else{
+    addOrupdataBlog.value='添加文章'
   }
+
 }
 
-
+const addOrupdataBlog = ref('')
 const onUploadImg = async (files, callback) => {
   console.log('onUploadImg')
   const responseUrls = await Promise.all(files.map((file) => uploadImage(file)))
@@ -75,8 +82,10 @@ const addArticle = async () => {
   try {
     const response = (await BlogAxiosInstance.addBlog(blog)) as Response
     console.log(response)
+    messageSucceed("博客发布成功")
   } catch (error) {
     console.error('addArticle failed', error)
+    messageError("博客发布失败")
   }
 }
 
@@ -93,8 +102,10 @@ const updataArticle = async () => {
   try {
     const response = (await BlogAxiosInstance.updateBlog(blog)) as Response
     console.log(response)
+    messageSucceed("博客更新成功")
   } catch (error) {
     console.error('updata failed', error)
+    messageError("博客更新失败")
   }
 }
 

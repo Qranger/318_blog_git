@@ -2,12 +2,11 @@
   <div class="article-container">
     <div class="catalog-column">
       <div>
-        <input type="file" @change="handleFileUpload" />
-        <!-- <el-button type="success" @click="hasEditRightsForBlog">hasEditRightsForBlog</el-button> -->
+        <!-- <input type="file" @change="handleFileUpload" />
         <p>文章 id:{{ Userstore.CurrentBlogId }}</p>
         <p>作者 id:{{ AuthorId }}</p>
         <p>当前用户 id:{{ Userstore.User.id }}</p>
-        <p>是否有编辑权限: {{ EditRight }}</p>
+        <p>是否有编辑权限: {{ EditRight }}</p> -->
       </div>
       <MdArticleCatalog :editorId="id" :scrollElement="scrollElement" />
       <UserCard v-if="AuthorId != -1" :id="AuthorId" />

@@ -114,28 +114,30 @@ const initial = () => {
 initial()
 
 const goHomepage = () => {
-  console.log('跳转到首页')
+  // console.log('跳转到首页')
+  Userstore.visitUserId=Userstore.User.id
   router.push('MyHome')
+    // 强制重新加载页面
 }
 
 const goSquare = () => {
-  console.log('跳转到广场')
+  // console.log('跳转到广场')
   router.push('Square')
 }
 
 const goBlogEdit = () => {
-  console.log('跳转到 BlogEdit')
+  // console.log('跳转到 BlogEdit')
   Userstore. CurrentBlogId=0
   router.push('BlogEdit')
 }
 
 const Logout = () => {
-  console.log('登出')
+  // console.log('登出')
   router.push('hello')
 }
 
 const EditInformation = () => {
-  console.log('EditInformation')
+  // console.log('EditInformation')
   drawer.value = true
 }
 </script>

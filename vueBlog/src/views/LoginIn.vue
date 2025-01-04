@@ -26,7 +26,8 @@ import { useUserStore } from '@/stores/userStore'
 const Userstore = useUserStore()
 
 import router from '@/router/index'
-import type { AxiosResponse } from 'axios'
+
+import { messageSucceed, messageWarning, messageInfo, messageError } from '@/utils/notification'
 
 import type { User } from '@/types/User'
 
@@ -34,41 +35,40 @@ const formRef = ref<FormInstance>()
 
 const form = reactive({
   username: '',
-  password: ''
+  password: '',
 })
 
 const rules = {
   username: [{ required: true, message: 'UserName is required', trigger: 'blur' }],
-  password: [{ required: true, message: 'Password is required', trigger: 'blur' }]
+  password: [{ required: true, message: 'Password is required', trigger: 'blur' }],
 }
 
 const LoginIn = async () => {
   try {
-
-    const user:User ={
-      name:form.username,
-      password:form.password,
+    const user: User = {
+      name: form.username,
+      password: form.password,
     }
     const response = await UserAxiosInstance.login(user)
-    console.log(response)
 
+    // console.log(response)
 
     Userstore.initializeStore()
-
     Userstore.UserToken = response.data.token
     Userstore.User.id = response.data.id
     Userstore.User.name = response.data.name
     Userstore.User.avatar = response.data.avatar
 
-    // 跳转到首页
+    Userstore.visitUserId = response.data.id
 
+    // 跳转到首页
+    messageSucceed('登录成功')
     router.push('MyHome')
   } catch (error) {
-    console.error('Login failed', error)
+    messageError('登录失败，用户名或密码错误')
     form.password = ''
   }
 }
-
 
 const onSubmit = () => {
   if (formRef.value) {

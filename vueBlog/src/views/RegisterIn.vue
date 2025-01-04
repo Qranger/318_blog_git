@@ -28,17 +28,9 @@ import UserAxiosInstance from '@/apis/userAxios'
 
 import UploadImageComponent from '@/components/UploadImgComponent.vue'
 
-import { ElNotification } from 'element-plus'
-import { h } from 'vue'
-
 import type { User } from '@/types/User'
 
-const message = () => {
-  ElNotification({
-    title: '注册成功',
-    message: h('请进行登录'),
-  })
-}
+import { messageSucceed, messageWarning, messageInfo, messageError } from '@/utils/notification'
 
 const formRef = ref<FormInstance>()
 
@@ -62,10 +54,10 @@ const Register = async () => {
       avatar: imgUrl.value,
     }
     const response = await UserAxiosInstance.register(user)
-    // console.log(response)
-    message()
+    messageSucceed('注册成功')
   } catch (error) {
-    console.error('注册出错,用户名重复', error)
+    // console.error('注册出错,用户名重复', error)
+    messageWarning('注册出错,用户名重复')
   }
 }
 
@@ -81,6 +73,8 @@ const onSubmit = () => {
     })
   }
 }
+
+
 
 const clear = () => {
   form.username = ''
